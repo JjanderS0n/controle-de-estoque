@@ -1,0 +1,109 @@
+mport java.util.HashMap;
+import java.util.Scanner;
+
+public class ControleEstoque {
+
+    private static final String LOGIN = "admin";
+    private static final String SENHA = "123456";
+    
+    private static HashMap<String, Integer> estoque = new HashMap<>();
+
+    public static void main(String[] args) {
+        
+        Scanner scanner = new Scanner(System.in);
+        String login, senha;
+        
+        System.out.println("Digite seu login:");
+        login = scanner.next();
+        System.out.println("Digite sua senha:");
+        senha = scanner.next();
+        
+        if (!login.equals(LOGIN) || !senha.equals(SENHA)) {
+            System.out.println("Login ou senha inválidos.");
+            return;
+        }
+        
+        while (true) {
+            System.out.println("Escolha uma opção:");
+            System.out.println("1 - Cadastrar produto");
+            System.out.println("2 - Registrar entrada de produto");
+            System.out.println("3 - Registrar saída de produto");
+            System.out.println("4 - Consultar estoque");
+            System.out.println("5 - Sair");
+            
+            int opcao = scanner.nextInt();
+            
+            switch (opcao) {
+                case 1:
+                    cadastrarProduto(scanner);
+                    break;
+                case 2:
+                    registrarEntrada(scanner);
+                    break;
+                case 3:
+                    registrarSaida(scanner);
+                    break;
+                case 4:
+                    consultarEstoque();
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        }
+    }
+
+    private static void cadastrarProduto(Scanner scanner) {
+        System.out.println("Digite o nome do produto:");
+        String nome = scanner.next();
+        
+        if (estoque.containsKey(nome)) {
+            System.out.println("Produto já cadastrado.");
+        } else {
+            estoque.put(nome, 0);
+            System.out.println("Produto cadastrado com sucesso.");
+        }
+    }
+
+    private static void registrarEntrada(Scanner scanner) {
+        System.out.println("Digite o nome do produto:");
+        String nome = scanner.next();
+        
+        if (!estoque.containsKey(nome)) {
+            System.out.println("Produto não cadastrado.");
+        } else {
+            System.out.println("Digite a quantidade de entrada:");
+            int quantidade = scanner.nextInt();
+            int quantidadeAtual = estoque.get(nome);
+            estoque.put(nome, quantidadeAtual + quantidade);
+            System.out.println("Entrada registrada com sucesso.");
+        }
+    }
+
+    private static void registrarSaida(Scanner scanner) {
+        System.out.println("Digite o nome do produto:");
+        String nome = scanner.next();
+        
+        if (!estoque.containsKey(nome)) {
+            System.out.println("Produto não cadastrado.");
+        } else {
+            System.out.println("Digite a quantidade de saída:");
+            int quantidade = scanner.nextInt();
+            int quantidadeAtual = estoque.get(nome);
+            if (quantidadeAtual < quantidade) {
+                System.out.println("Quantidade indisponível em estoque.");
+            } else {
+                estoque.put(nome, quantidadeAtual - quantidade);
+                System.out.println("Saída registrada com sucesso.");
+            }
+        }
+    }
+
+    private static void consultarEstoque() {
+        System.out.println("Estoque:");
+        estoque.forEach((nome, quantidade) -> {
+            System.out.println(nome + " - " + quantidade);
+        });
+    }
+}
